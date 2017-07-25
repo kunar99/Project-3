@@ -40,7 +40,7 @@ public class Project3 extends JFrame implements ActionListener {
 
     //constructor
     public Project3() {
-        super("Mildot Range Calculator");
+        super("Project 3");
 
         //Specifies the layout of the frame
         setFrame(WIDTH, HEIGHT);
