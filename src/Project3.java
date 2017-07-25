@@ -187,7 +187,7 @@ public class Project3 extends JFrame implements ActionListener {
 
     //Start of Main Method
     public static void main(String[] args) {
-        MildotCalculator calc = new MildotCalculator();
+        Project3 calc = new Project3();
 
         calc.display();
 
