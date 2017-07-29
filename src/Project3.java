@@ -10,32 +10,33 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.DecimalFormat;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.*;
 
 public class Project3 extends JFrame implements ActionListener {
 
-    //Height and weight for the JFrame
-    private static final int WIDTH = 765;
-    private static final int HEIGHT = 250;
+    //Creation of the text fields for input/output
+    private static JTextField enterNText;
+    public static JTextField resultsText;
+    private static JTextField efficiencyText;
+
+    //Creation of the label names
+    private static JLabel enterNLabel;
+    private static JLabel resultsLabel;
+    private static JLabel efficiencyLabel;
+//    private static JLabel exampleLabel;
+
+    //Radio Buttons
+    private static JRadioButton iterativeRadButt;
+    private static JRadioButton recursiveRadButt;
 
     //Button to perform the distance calculation
     private static JButton button;
 
-    //Creation of the text fields for input/output
-    private static JTextField sizeNumberTxt;
-    private static JTextField milNumberTxt;
-    public static JTextField outputShot;
-
-    //Creation of the label names
-    private static JLabel sizeLabel;
-    private static JLabel milLabel;
-    private static JLabel resultsLabel;
-    private static JLabel exampleLabel;
-
-    //Radio Buttons
-    private static JRadioButton yardsRadButton;
-    private static JRadioButton metersRadButton;
-
+    //Height and weight for the JFrame
+    private static final int WIDTH = 500;
+    private static final int HEIGHT = 250;
 
 
     //constructor
@@ -48,87 +49,142 @@ public class Project3 extends JFrame implements ActionListener {
         setBackground(Color.lightGray);
 
         //Creation of a JPanel
-        JPanel panel = new JPanel();
+        JPanel panel1 = new JPanel();
         JPanel panel2 = new JPanel();
         JPanel panel3 = new JPanel();
-        panel.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 20));
-        add(panel, BorderLayout.NORTH);
+        panel1.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 20));
+        add(panel1, BorderLayout.NORTH);
         add(panel2, BorderLayout.CENTER);
         add(panel3, BorderLayout.AFTER_LAST_LINE);
 
 
         //Creating two textPanels to be used
         JPanel textPanel = new JPanel();
-        JPanel textPanel2 = new JPanel();
+        //JPanel textPanel2 = new JPanel();
         textPanel.setLayout(new GridLayout(4, 2));
         add(textPanel, BorderLayout.WEST);
-        add(textPanel2, BorderLayout.NORTH);
+        //add(textPanel2, BorderLayout.NORTH);
 
         //Creating button group for Radio Buttons
         ButtonGroup radButtonGrp = new ButtonGroup();
 
 
-
-
-        //Creating text and label fields for Value, Mils, Results, and example
-        //Example label is created to give the user a visual example of data to input and validate their results.
-        exampleLabel = new JLabel("Example: (Target is 68 inches * 27.8) divided by (Target in Mil Reticle is 4 mils) equals a distance to target of 472.6 yards");
-        textPanel2.add(exampleLabel);
-
         //Creating a size text/label field for user to input their values
-        sizeLabel = new JLabel("Target size in inches: ");
-        textPanel.add(sizeLabel);
-        sizeNumberTxt = new JTextField(5);
-        textPanel.add(sizeNumberTxt);
-        sizeNumberTxt.setEditable(true);
+        enterNLabel = new JLabel("Enter n: ");
+        textPanel.add(enterNLabel);
+        enterNText = new JTextField(5);
+        textPanel.add(enterNText);
+        enterNText.setEditable(true);
         //User can hover their mouse over this field to get an explanation of what data needs to be entered
-        sizeNumberTxt.setToolTipText("This field is to enter the size of your target in inches. Target size needs to be in inches to be calculated corrected.");
+        enterNText.setToolTipText("Enter the number of iterations you would like to compute.");
 
         //Creating a mil Text/Label field for user to input their values
-        milLabel = new JLabel("Mils of your target:  ");
-        textPanel.add(milLabel);
-        milNumberTxt = new JTextField(5);
-        textPanel.add(milNumberTxt);
-        milNumberTxt.setEditable(true);
-        //User can hover their mouse over this field to get an explanation of what data needs to be entered
-        milNumberTxt.setToolTipText("This field corresponds to the amount of mildots your target is from the bottom first dot, within your scopes reticle.");
+        resultsLabel = new JLabel("Results:  ");
+        textPanel.add(resultsLabel);
+        resultsText = new JTextField(5);
+        textPanel.add(resultsText);
+        resultsText.setFont(new java.awt.Font("Arial", Font.ITALIC | Font.BOLD, 15));
+        resultsText.setForeground(Color.RED);
+        resultsText.setEditable(false);
+
 
         //Creating a results Text/Label to display the calculated distance information
-        resultsLabel = new JLabel("Distance in Yards-to-Target: ");
-        textPanel.add(resultsLabel);
-        outputShot = new JTextField(5);
-        textPanel.add(outputShot);
-        outputShot.setFont(new java.awt.Font("Arial", Font.ITALIC | Font.BOLD, 15));
-        outputShot.setForeground(Color.RED);
-        outputShot.setEditable(false);
+        efficiencyLabel = new JLabel("Efficiency: ");
+        textPanel.add(efficiencyLabel);
+        efficiencyText = new JTextField(5);
+        textPanel.add(efficiencyText);
+        efficiencyText.setFont(new java.awt.Font("Arial", Font.ITALIC | Font.BOLD, 15));
+        efficiencyText.setForeground(Color.RED);
+        efficiencyText.setEditable(false);
 
         //Creating a JButton so user can perform the calculation
-        button = new JButton("Calculate Your Shot");
+        button = new JButton("Compute");
         panel3.add(button);
         //User can hover their mouse over this field to get an explanation of what action needs to be performed
-        button.setToolTipText("Button must be clicked to calculate the distance");
+        button.setToolTipText("Click to perform your calculations");
 
 
         //Yards Radio Button
-        yardsRadButton = new JRadioButton("Yards");
-        yardsRadButton.setText("Yards");
-        radButtonGrp.add(yardsRadButton);
-        panel2.add(yardsRadButton);
-        yardsRadButton.setSelected(true);
+        iterativeRadButt = new JRadioButton("Iterative");
+        iterativeRadButt.setText("Iterative");
+        radButtonGrp.add(iterativeRadButt);
+        panel2.add(iterativeRadButt);
+        iterativeRadButt.setSelected(true);
 
 
         //Meters Radio Button
-        metersRadButton = new JRadioButton("Meters");
-        metersRadButton.setText("Meters");
-        radButtonGrp.add(metersRadButton);
-        panel2.add(metersRadButton);
-        metersRadButton.setSelected(true);
+        recursiveRadButt = new JRadioButton("Recursive");
+        recursiveRadButt.setText("Recurvise");
+        radButtonGrp.add(recursiveRadButt);
+        panel2.add(recursiveRadButt);
+        recursiveRadButt.setSelected(false);
+
+
+        button.addActionListener(this);
+
+        //create an object to the inner class WindowAdapterImplementation
+        WindowAdapterImplementations windowListener = new WindowAdapterImplementations();
+
+        //invoke the add
+        addWindowListener(windowListener);
 
     }
 
-    //Creation of an ActionListener
-    public void actionPerformed(ActionEvent arg0) {
+//Writes the data into the .csv file
+
+    class WindowAdapterImplementations extends WindowAdapter {
+
+        public void windowClosing(WindowEvent e) {
+
+            try {
+
+                FileWriter dataOutput = new FileWriter("outData.txt");
+
+                //prepare header
+
+                dataOutput.append("n");
+                // comma inserted to help the excel program to add a column
+                dataOutput.append(',');
+
+                dataOutput.append("Recursive");
+                // comma inserted to help the excel program to add a column
+                dataOutput.append(',');
+
+                dataOutput.append("Iterative");
+                // comma inserted to help the excel program to add a column
+                dataOutput.append(',');
+
+                dataOutput.append('\n');
+
+                for (int i = 0; i <= 10; i++) {
+
+                    dataOutput.append(String.valueOf(i));
+                    dataOutput.append(',');
+
+                    Sequence.computeRecursive(i);
+                    dataOutput.append(String.valueOf(Sequence.getEfficiency()));
+
+                    dataOutput.append(',');
+                    Sequence.computeIterative(i);
+
+                    dataOutput.append(String.valueOf(Sequence.getEfficiency()));
+                    dataOutput.append('\n');
+
+                }
+
+                dataOutput.flush();
+                dataOutput.close();
+
+            } catch (Exception ae){
+
+                System.err.println("Unable to write to the file" + ae.getMessage() + " ");
+
+                System.exit(0);
+
+            }
+        }
     }
+
 
 
     private void setFrame(int width, int height) {
@@ -142,62 +198,40 @@ public class Project3 extends JFrame implements ActionListener {
         setVisible(true);
     }
 
-    //Try/Catch clause to ensure correct values are entered
-    public static boolean number(String input) {
-
-        boolean number = false;
-        try {
-            Double.parseDouble(input);
-            number = true;
-        } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(null, "Incorrect value entered, please, enter a number");
-        }
-        return number;
-    }
-
-
-
-    //Method to calculate the distance in yards
-    private static void calcYards(double value, double mils) {
-        double yards = (27.8 * value / mils);
-        DecimalFormat df = new DecimalFormat("###.##");
-
-        outputShot.setText(df.format(yards));
-    }
-
-    //Method to calculate the distance in meters
-    private static void calcMeters(double value, double mils) {
-        double meters = (25.4 * value / mils);
-        DecimalFormat df = new DecimalFormat("###.##");
-
-        outputShot.setText(df.format(meters));
-
-    }
-
-    private static void radioButton(){
-
-
-        if(yardsRadButton.isSelected()){
-            calcYards(Double.parseDouble(sizeNumberTxt.getText()), Double.parseDouble(milNumberTxt.getText()));
-        }else if(metersRadButton.isSelected()){
-            calcMeters(Double.parseDouble(sizeNumberTxt.getText()), Double.parseDouble(milNumberTxt.getText()));
-        }
-    }
-
 
     //Start of Main Method
     public static void main(String[] args) {
         Project3 calc = new Project3();
-
         calc.display();
 
+    }
+    public void actionPerformed(ActionEvent ae) {
 
-        //Action Listener for the Calc Button
-        button.addActionListener ((ActionEvent e) ->  {
+        int IterationCount = 0, RecursiveCount = 0;
 
-            if (number(sizeNumberTxt.getText()) && number(milNumberTxt.getText())){
-                radioButton();
-            }} );
+        if (button == ae.getSource()) {
 
-    }//End of Main
-}//End of Class
+            if (iterativeRadButt.isSelected()) {
+
+                int itValue = Integer.parseInt(enterNText.getText());
+                int iterationVal = Sequence.computeIterative(itValue);
+                resultsText.setText(iterationVal + "");
+                IterationCount = Sequence.getEfficiency();
+                efficiencyText.setText(IterationCount + "");
+
+            } else if (recursiveRadButt.isSelected()) {
+
+                int recValue = Integer.parseInt(enterNText.getText());
+                int recursiveVal = Sequence.computeRecursive(recValue);
+                resultsText.setText(recursiveVal + "");
+                RecursiveCount = Sequence.getEfficiency();
+                efficiencyText.setText(RecursiveCount + "");
+
+            }
+        }
+    }
+} //End of Class
+
+
+
+
