@@ -1,12 +1,9 @@
-public class Sequence
+public class Sequence{
 
-{
+    static int efficiencyVal = 0;
 
-    static int efficencyValue;
-    // compute iteration of n
+    //Method for calculating an Iterative
     public static int computeIterative(int n){
-
-        efficencyValue=0;
 
         int value = 0;
 
@@ -17,27 +14,23 @@ public class Sequence
             for (int i = 1; i <= n; i++){
                 value = i * n;
 
-                efficencyValue++;
+                efficiencyVal++; //Counter for efficiency
             }
         }
-        // returns the value
+        //Returns the value for iterative
         return value;
 
     }
-    // computes the recursion of n
-    public static int computeRecursive(int n)
+    //Method for calculating a Recursive
+    public static int computeRecursive(int n){
 
-    {
-
-        efficencyValue=0;
-
-        return recursive(n);
+      return recursive(n);
 
     }
 
     private static int recursive(int n){
 
-        efficencyValue++;
+        efficiencyVal++; //Counter for efficiency
 
         if (n == 0)
             return 0;
@@ -47,14 +40,16 @@ public class Sequence
 
         else{
 
+            //Returns the value for recursive
             return n + recursive(n - 1);
-
         }
     }
 
+    //Creating Efficiency method to be called in Project3 Class
     public static int getEfficiency(){
 
-        return efficencyValue;
+        //Returns the value for efficiency
+        return efficiencyVal;
     }
 
 }

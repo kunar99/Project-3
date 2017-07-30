@@ -1,9 +1,10 @@
 
 /**
- * Created by johnclayton on 07/10/2017.
- * Program will calculate the distance to a target using specified values
- * entered by a user via a GUI interface
- *
+ * Created by johnclayton on 07/22/2017.
+ * Program will calculate the sequence of numbers (Recursive or Iterative)
+ * from a value entered by the user. The program will calculate the
+ * value entered a total of 11 times and export the values for both Recursive method
+ * and Iterative method to a text file.
  */
 
 import javax.swing.*;
@@ -25,13 +26,12 @@ public class Project3 extends JFrame implements ActionListener {
     private static JLabel enterNLabel;
     private static JLabel resultsLabel;
     private static JLabel efficiencyLabel;
-//    private static JLabel exampleLabel;
 
     //Radio Buttons
     private static JRadioButton iterativeRadButt;
     private static JRadioButton recursiveRadButt;
 
-    //Button to perform the distance calculation
+    //Button to execute calculation
     private static JButton button;
 
     //Height and weight for the JFrame
@@ -48,7 +48,7 @@ public class Project3 extends JFrame implements ActionListener {
         setLayout(new BorderLayout());
         setBackground(Color.lightGray);
 
-        //Creation of a JPanel
+        //Creation of the JPanel
         JPanel panel1 = new JPanel();
         JPanel panel2 = new JPanel();
         JPanel panel3 = new JPanel();
@@ -69,7 +69,7 @@ public class Project3 extends JFrame implements ActionListener {
         ButtonGroup radButtonGrp = new ButtonGroup();
 
 
-        //Creating a size text/label field for user to input their values
+        //Creating a "Enter N" text/label field for user to input their value
         enterNLabel = new JLabel("Enter n: ");
         textPanel.add(enterNLabel);
         enterNText = new JTextField(5);
@@ -78,7 +78,7 @@ public class Project3 extends JFrame implements ActionListener {
         //User can hover their mouse over this field to get an explanation of what data needs to be entered
         enterNText.setToolTipText("Enter the number of iterations you would like to compute.");
 
-        //Creating a mil Text/Label field for user to input their values
+        //Creating a "Results" Text/Label to display the sum
         resultsLabel = new JLabel("Results:  ");
         textPanel.add(resultsLabel);
         resultsText = new JTextField(5);
@@ -88,7 +88,7 @@ public class Project3 extends JFrame implements ActionListener {
         resultsText.setEditable(false);
 
 
-        //Creating a results Text/Label to display the calculated distance information
+        //Creating a "Efficiency" Text/Label to display the efficiency
         efficiencyLabel = new JLabel("Efficiency: ");
         textPanel.add(efficiencyLabel);
         efficiencyText = new JTextField(5);
@@ -104,7 +104,7 @@ public class Project3 extends JFrame implements ActionListener {
         button.setToolTipText("Click to perform your calculations");
 
 
-        //Yards Radio Button
+        //Iterative Radio Button
         iterativeRadButt = new JRadioButton("Iterative");
         iterativeRadButt.setText("Iterative");
         radButtonGrp.add(iterativeRadButt);
@@ -112,20 +112,21 @@ public class Project3 extends JFrame implements ActionListener {
         iterativeRadButt.setSelected(true);
 
 
-        //Meters Radio Button
+        //Recursive Radio Button
         recursiveRadButt = new JRadioButton("Recursive");
-        recursiveRadButt.setText("Recurvise");
+        recursiveRadButt.setText("Recursive");
         radButtonGrp.add(recursiveRadButt);
         panel2.add(recursiveRadButt);
         recursiveRadButt.setSelected(false);
 
 
+        //Creating the action listener for the button
         button.addActionListener(this);
 
-        //create an object to the inner class WindowAdapterImplementation
+        //Creating an object of Window Adapter Implementation
         WindowAdapterImplementations windowListener = new WindowAdapterImplementations();
 
-        //invoke the add
+        //Initializing the Window Listener
         addWindowListener(windowListener);
 
     }
@@ -138,54 +139,39 @@ public class Project3 extends JFrame implements ActionListener {
 
             try {
 
-                FileWriter dataOutput = new FileWriter("outData.txt");
+                FileWriter output = new FileWriter("Output.txt");
 
-                //prepare header
+                output.append("n");
+                output.append(',');  //Formatting using "," to load comma delimited in excel
+                output.append("Recursive");
+                output.append(',');
+                output.append("Iterative");
+                output.append(',' + "\n");
 
-                dataOutput.append("n");
-                // comma inserted to help the excel program to add a column
-                dataOutput.append(',');
-
-                dataOutput.append("Recursive");
-                // comma inserted to help the excel program to add a column
-                dataOutput.append(',');
-
-                dataOutput.append("Iterative");
-                // comma inserted to help the excel program to add a column
-                dataOutput.append(',');
-
-                dataOutput.append('\n');
-
+                //Counter to run the for statement from 0 to 10 iterations
                 for (int i = 0; i <= 10; i++) {
 
-                    dataOutput.append(String.valueOf(i));
-                    dataOutput.append(',');
-
+                    output.append(String.valueOf(i));
+                    output.append(',');
                     Sequence.computeRecursive(i);
-                    dataOutput.append(String.valueOf(Sequence.getEfficiency()));
-
-                    dataOutput.append(',');
+                    output.append(String.valueOf(Sequence.getEfficiency())); //Pulling return value from Efficiency Method
+                    output.append(',');
                     Sequence.computeIterative(i);
-
-                    dataOutput.append(String.valueOf(Sequence.getEfficiency()));
-                    dataOutput.append('\n');
-
+                    output.append(String.valueOf(Sequence.getEfficiency())); //Pulling return value from Efficiency Method
+                    output.append('\n');
                 }
 
-                dataOutput.flush();
-                dataOutput.close();
+                output.flush();  //Flushes the output stream and forces any buffered output bytes to be written out.
+                output.close();  //Closing the stream
 
-            } catch (Exception ae){
+            } catch (Exception ae){  //Catch exception is added to handle any problems of closing the text file.
 
                 System.err.println("Unable to write to the file" + ae.getMessage() + " ");
-
                 System.exit(0);
 
             }
         }
     }
-
-
 
     private void setFrame(int width, int height) {
         setSize(width, height);
@@ -207,25 +193,26 @@ public class Project3 extends JFrame implements ActionListener {
     }
     public void actionPerformed(ActionEvent ae) {
 
-        int IterationCount = 0, RecursiveCount = 0;
+        int iterativeCnt = 0; // Initializing variable's values to be used
+        int recursiveCnt = 0;
 
         if (button == ae.getSource()) {
 
-            if (iterativeRadButt.isSelected()) {
+            if (iterativeRadButt.isSelected()) { //Performs calculations if Iterative Radio Button selected
 
                 int itValue = Integer.parseInt(enterNText.getText());
                 int iterationVal = Sequence.computeIterative(itValue);
                 resultsText.setText(iterationVal + "");
-                IterationCount = Sequence.getEfficiency();
-                efficiencyText.setText(IterationCount + "");
+                iterativeCnt = Sequence.getEfficiency();
+                efficiencyText.setText(iterativeCnt + "");
 
-            } else if (recursiveRadButt.isSelected()) {
+            } else if (recursiveRadButt.isSelected()) {  //Performs calculations if Recursive Radio Button selected
 
                 int recValue = Integer.parseInt(enterNText.getText());
                 int recursiveVal = Sequence.computeRecursive(recValue);
                 resultsText.setText(recursiveVal + "");
-                RecursiveCount = Sequence.getEfficiency();
-                efficiencyText.setText(RecursiveCount + "");
+                recursiveCnt = Sequence.getEfficiency();
+                efficiencyText.setText(recursiveCnt + "");
 
             }
         }
